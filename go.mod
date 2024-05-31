@@ -1,3 +1,3 @@
-module github.com/your-username/go-logger
+module github.com/tiranosaur/go-logger
 
 go 1.16
