@@ -55,6 +55,3 @@ func getCallerString(prefix string, filePath string, line int) string {
 	rootPath, _ := filepath.Rel(baseDir, filePath)
 	return fmt.Sprintf("%s \t %s \t %s:%d \t : ", currentTime, prefix, rootPath, line)
 }
-
-//2024-06-10T14:53:38.234+03:00  INFO 9764 --- [demoSpring] [           main] org.example.demospring.config.MyConfig   : bean bbb
-//14:53:33.342 [main] INFO org.example.demospring.DemoSpringApplication -- zzz xxx
