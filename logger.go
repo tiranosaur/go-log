@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -17,7 +20,7 @@ const placeholder = "{}"
 
 func initLog(logPtr **log.Logger, prefix string) {
 	if *logPtr == nil {
-		*logPtr = log.New(os.Stdout, prefix, log.Ldate|log.Ltime|log.Llongfile)
+		*logPtr = log.New(os.Stdout, prefix, log.Ldate|log.Ltime)
 	}
 }
 
@@ -29,16 +32,25 @@ func replacePlaceholders(str string, args ...interface{}) string {
 }
 
 func WARN(str string, args ...interface{}) {
-	initLog(&warningLog, "WARN: ")
+	_, filePath, line, _ := runtime.Caller(1)
+	initLog(&warningLog, "WARN: "+getCallerString(filePath, line))
 	warningLog.Println(replacePlaceholders(str, args...))
 }
 
 func INFO(str string, args ...interface{}) {
-	initLog(&infoLog, "INFO: ")
+	_, filePath, line, _ := runtime.Caller(1)
+	initLog(&infoLog, "INFO: "+getCallerString(filePath, line))
 	infoLog.Println(replacePlaceholders(str, args...))
 }
 
 func ERROR(str string, args ...interface{}) {
-	initLog(&errorLog, "ERROR: ")
+	_, filePath, line, _ := runtime.Caller(1)
+	initLog(&errorLog, "ERROR: "+getCallerString(filePath, line))
 	errorLog.Println(replacePlaceholders(str, args...))
+}
+
+func getCallerString(filePath string, line int) string {
+	baseDir, _ := filepath.Abs(filepath.Dir("."))
+	rootPath, _ := filepath.Rel(baseDir, filePath)
+	return "\\" + rootPath + ":" + strconv.Itoa(line) + " "
 }
