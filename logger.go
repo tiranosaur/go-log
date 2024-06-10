@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strconv"
 	"strings"
+	"time"
 )
 
 var (
@@ -20,7 +20,7 @@ const placeholder = "{}"
 
 func initLog(logPtr **log.Logger, prefix string) {
 	if *logPtr == nil {
-		*logPtr = log.New(os.Stdout, prefix, log.Ldate|log.Ltime)
+		*logPtr = log.New(os.Stdout, prefix, 0)
 	}
 }
 
@@ -33,24 +33,28 @@ func replacePlaceholders(str string, args ...interface{}) string {
 
 func WARN(str string, args ...interface{}) {
 	_, filePath, line, _ := runtime.Caller(1)
-	initLog(&warningLog, "WARN: "+getCallerString(filePath, line))
+	initLog(&warningLog, getCallerString("WARN: ", filePath, line))
 	warningLog.Println(replacePlaceholders(str, args...))
 }
 
 func INFO(str string, args ...interface{}) {
 	_, filePath, line, _ := runtime.Caller(1)
-	initLog(&infoLog, "INFO: "+getCallerString(filePath, line))
+	initLog(&infoLog, getCallerString("INFO: ", filePath, line))
 	infoLog.Println(replacePlaceholders(str, args...))
 }
 
 func ERROR(str string, args ...interface{}) {
 	_, filePath, line, _ := runtime.Caller(1)
-	initLog(&errorLog, "ERROR: "+getCallerString(filePath, line))
+	initLog(&errorLog, getCallerString("ERROR: ", filePath, line))
 	errorLog.Println(replacePlaceholders(str, args...))
 }
 
-func getCallerString(filePath string, line int) string {
+func getCallerString(prefix string, filePath string, line int) string {
+	currentTime := time.Now().Format("2006-01-02T15:04:05.999-07:00")
 	baseDir, _ := filepath.Abs(filepath.Dir("."))
 	rootPath, _ := filepath.Rel(baseDir, filePath)
-	return "\\" + rootPath + ":" + strconv.Itoa(line) + " "
+	return fmt.Sprintf("%s \t %s \t %s:%d \t : ", currentTime, prefix, rootPath, line)
 }
+
+//2024-06-10T14:53:38.234+03:00  INFO 9764 --- [demoSpring] [           main] org.example.demospring.config.MyConfig   : bean bbb
+//14:53:33.342 [main] INFO org.example.demospring.DemoSpringApplication -- zzz xxx

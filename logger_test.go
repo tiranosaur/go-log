@@ -31,7 +31,7 @@ func TestWARN(t *testing.T) {
 				str:  "This is a test: {}",
 				args: []interface{}{"first"},
 			},
-			expected: "^WARN.*" + "This is a test: first" + "$",
+			expected: "^.*WARN.*" + "This is a test: first" + "$",
 		},
 	}
 
@@ -92,7 +92,7 @@ func TestINFO(t *testing.T) {
 				str:  "This is a test: {} and {}",
 				args: []interface{}{"first", "second"},
 			},
-			expected: "^INFO.*" + "This is a test: first and second" + "$",
+			expected: "^.*INFO.*" + "This is a test: first and second" + "$",
 		},
 	}
 
@@ -153,7 +153,7 @@ func TestERROR(t *testing.T) {
 				str:  "This is a test: {} and {}",
 				args: []interface{}{"first", "second"},
 			},
-			expected: "^ERROR.*" + "This is a test: first and second" + "$",
+			expected: "^.*ERROR.*" + "This is a test: first and second" + "$",
 		},
 	}
 
@@ -191,8 +191,6 @@ func TestERROR(t *testing.T) {
 			isPresent, _ := regexp.MatchString(tt.expected, logged)
 			if !isPresent {
 				t.Errorf("[%s] Expected log to contain %q, but got %q", tt.name, tt.expected, logged)
-			} else {
-				fmt.Printf("[%s] has passed\n", tt.name)
 			}
 		})
 	}
